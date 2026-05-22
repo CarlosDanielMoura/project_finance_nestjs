@@ -1,0 +1,26 @@
+### POST DE USUARIOS
+POST http://localhost:3000/users
+Content-Type: application/json
+
+{
+    "name": "John Doe",
+    "email": "carlos@gmail.com",
+    "password": "password123",
+    "Role": "FUNCIONARIO"
+}
+
+
+
+### POST DE STORES
+
+POST http://localhost:3000/stores
+Content-Type: application/json
+
+{
+    "name": "Store 1",
+    "road": "123 Main St",
+    "phone": "555-1234"
+}
+
+
+
