@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { CreateStoreDto } from './dto/create-store.dto';
 import { UpdateStoreDto } from './dto/update-store.dto';
@@ -5,12 +6,10 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class StoreService {
-
-  constructor(private prismaService: PrismaService) { }
+  constructor(private prismaService: PrismaService) {}
   async create(createStoreDto: CreateStoreDto) {
-
     return await this.prismaService.store.create({
-      data: createStoreDto
+      data: createStoreDto,
     });
   }
 
@@ -21,27 +20,40 @@ export class StoreService {
   async findOne(id: string) {
     return await this.prismaService.store.findUnique({
       where: {
-        id
-      }
-    })
+        id,
+      },
+      include: {
+        userStores: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                email: true,
+                name: true,
+              },
+            },
+          },
+        },
+      },
+    });
   }
 
   async update(id: string, updateStoreDto: UpdateStoreDto) {
     return await this.prismaService.store.update({
       where: {
-        id
+        id,
       },
       data: {
-        ...updateStoreDto
-      }
-    })
+        ...updateStoreDto,
+      },
+    });
   }
 
   async remove(id: string) {
     return await this.prismaService.store.delete({
       where: {
-        id
-      }
-    })
+        id,
+      },
+    });
   }
 }

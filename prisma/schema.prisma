@@ -19,24 +19,38 @@ enum Roles {
 }
 
 model Users {
-  id        String   @id @default(cuid())
-  name      String
-  email     String   @unique
-  password  String
-  Role      Roles    @default(FUNCIONARIO)
-  storeID   Store[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String      @id @default(cuid())
+  name       String
+  email      String      @unique
+  password   String
+  Role       Roles       @default(FUNCIONARIO)
+  storeID    Store[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  userStores UserStore[]
 }
 
 model Store {
-  id           String  @id @default(cuid())
+  id           String      @id @default(cuid())
   name         String
   road         String
   neighborhood String
   number       String
+  city         String
   state        String
   zipCode      String
+  document     String      @unique
   phone        String
   user         Users[]
+  userStores   UserStore[]
+}
+
+model UserStore {
+  userId  String
+  storeId String
+
+  user  Users @relation(fields: [userId], references: [id])
+  store Store @relation(fields: [storeId], references: [id])
+
+  @@id([userId, storeId])
 }

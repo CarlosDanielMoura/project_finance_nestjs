@@ -1,10 +1,13 @@
-export class CreateStoreDto {
+/* eslint-disable prettier/prettier */
 
-    name: string
-    road: string
-    neighborhood: string
-    number: string
-    state: string
-    zipCode: string
-    phone: string
+export class CreateStoreDto {
+  name: string;
+  road: string;
+  neighborhood: string;
+  number: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  document: string;
+  phone: string;
 }

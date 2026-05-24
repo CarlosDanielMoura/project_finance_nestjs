@@ -3,24 +3,43 @@ POST http://localhost:3000/users
 Content-Type: application/json
 
 {
-    "name": "John Doe",
-    "email": "carlos@gmail.com",
-    "password": "password123",
-    "Role": "FUNCIONARIO"
+    "name": "Carlos Daniel",
+    "email": "daniel@gmail.com",
+    "password": "1234",
+    "Role": "ADMIN"
 }
+
+
+### GET DE USUARIOS
+GET http://localhost:3000/users
+Content-Type: application/json
+
+### GET DE USUARIOS POR ID
+GET http://localhost:3000/users/cmphpnjjq0000aoi6gnqlqwuh
+Content-Type: application/json
 
 
 
 ### POST DE STORES
 
-POST http://localhost:3000/stores
+POST http://localhost:3000/store
 Content-Type: application/json
 
 {
-    "name": "Store 1",
-    "road": "123 Main St",
-    "phone": "555-1234"
+    "name": "TESTE",
+    "road": "TESTE",
+    "neighborhood": "TESTE",
+    "number": "578",
+    "city": "Engenheiro",
+    "state": "MG",
+    "zipCode": "35130-970",
+    "document": "06.109.948/0001-43",
+    "phone": "(33) 99428-9361"
 }
 
+### GET DE STORES
+GET http://localhost:3000/store/cmphqjx0b0002wsi60xdffui3
+Content-Type: application/json
 
 
+    
