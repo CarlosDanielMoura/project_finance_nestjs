@@ -1,6 +1,6 @@
 import { Roles } from 'generated/prisma/enums';
 
-export interface IAuthPayload {
+export class PayloadAuthDto {
   name: string;
   sub: string;
   email: string;

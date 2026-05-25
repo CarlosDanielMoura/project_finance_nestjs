@@ -7,8 +7,9 @@ import {
 
 import { Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
-import { IAuthPayload } from './interface/auth.interface';
-import { PrismaService } from 'src/prisma/prisma.service';
+
+import { PayloadAuthDto } from './dto/payload-auth.dto';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -26,7 +27,7 @@ export class AuthGuard implements CanActivate {
     }
 
     try {
-      const payload: IAuthPayload = await this.jwtService.verify(token, {
+      const payload: PayloadAuthDto = await this.jwtService.verify(token, {
         algorithms: ['HS256'],
       });
 
