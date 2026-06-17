@@ -2,7 +2,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import bcryt from 'bcrypt';
 
 @Injectable()
@@ -10,10 +10,21 @@ export class UsersService {
   constructor(private prismaService: PrismaService) {}
 
   async create(createUserDto: CreateUserDto) {
+    const { storeIds, ...userData } = createUserDto;
+
     return this.prismaService.users.create({
       data: {
-        ...createUserDto,
+        ...userData,
         password: bcryt.hashSync(createUserDto.password, 10),
+
+        userStores: {
+          create: storeIds?.map((storeId) => ({
+            storeId,
+          })),
+        },
+      },
+      include: {
+        userStores: true,
       },
     });
   }

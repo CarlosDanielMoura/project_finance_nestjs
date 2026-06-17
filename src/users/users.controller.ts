@@ -16,12 +16,12 @@ import { AuthGuard } from '../auth/auth.guard';
 import { RoleGuard } from '../auth/role/role.guard';
 import { RequiredRoles } from '../auth/required-roles.decorator';
 
-@UseGuards(AuthGuard, RoleGuard)
+@UseGuards(RoleGuard)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @RequiredRoles('OWNER')
+  //@RequiredRoles('OWNER')
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);

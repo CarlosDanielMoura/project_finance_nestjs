@@ -21,7 +21,7 @@ import { RoleGuard } from '../auth/role/role.guard';
 export class StoreController {
   constructor(private readonly storeService: StoreService) {}
 
-  @RequiredRoles('ADMIN')
+  @RequiredRoles('ADMIN', 'OWNER', 'FUNCIONARIO')
   @Post()
   create(@Body() createStoreDto: CreateStoreDto) {
     return this.storeService.create(createStoreDto);
@@ -33,7 +33,7 @@ export class StoreController {
     return this.storeService.findAll();
   }
 
-  @RequiredRoles('ADMIN', 'OWNER')
+  @RequiredRoles('ADMIN', 'OWNER', 'FUNCIONARIO')
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.storeService.findOne(id);

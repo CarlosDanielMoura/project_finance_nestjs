@@ -1,13 +1,24 @@
 /* eslint-disable prettier/prettier */
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateStoreDto } from './dto/create-store.dto';
 import { UpdateStoreDto } from './dto/update-store.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class StoreService {
   constructor(private prismaService: PrismaService) {}
   async create(createStoreDto: CreateStoreDto) {
+    const existingStore = await this.checkIfStoreExists(
+      createStoreDto.document,
+    );
+    if (existingStore) {
+      throw new ConflictException('Já existe uma loja com este CNPJ');
+    }
+
     return await this.prismaService.store.create({
       data: createStoreDto,
     });
@@ -18,13 +29,13 @@ export class StoreService {
   }
 
   async findOne(id: string) {
-    return await this.prismaService.store.findUnique({
+    const store = await this.prismaService.store.findUnique({
       where: {
         id,
       },
       include: {
         userStores: {
-          include: {
+          select: {
             user: {
               select: {
                 id: true,
@@ -36,9 +47,32 @@ export class StoreService {
         },
       },
     });
+
+    if (!store) {
+      throw new NotFoundException('Loja não encontrada');
+    }
+
+    return store;
   }
 
   async update(id: string, updateStoreDto: UpdateStoreDto) {
+    const existingStore = await this.checkIfStoreExistsById(id);
+    if (!existingStore) {
+      throw new ConflictException('Loja não encontrada');
+    }
+
+    if (
+      updateStoreDto.document &&
+      updateStoreDto.document !== existingStore.document
+    ) {
+      const duplicateDocument = await this.checkIfStoreExists(
+        updateStoreDto.document,
+      );
+      if (duplicateDocument) {
+        throw new ConflictException('Já existe uma loja com este CNPJ');
+      }
+    }
+
     return await this.prismaService.store.update({
       where: {
         id,
@@ -50,7 +84,27 @@ export class StoreService {
   }
 
   async remove(id: string) {
+    const existingStore = await this.checkIfStoreExistsById(id);
+    if (!existingStore) {
+      throw new ConflictException('Loja não encontrada');
+    }
     return await this.prismaService.store.delete({
+      where: {
+        id,
+      },
+    });
+  }
+
+  private async checkIfStoreExists(document: string) {
+    return await this.prismaService.store.findUnique({
+      where: {
+        document,
+      },
+    });
+  }
+
+  private async checkIfStoreExistsById(id: string) {
+    return await this.prismaService.store.findUnique({
       where: {
         id,
       },
