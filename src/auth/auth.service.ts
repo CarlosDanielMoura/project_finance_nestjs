@@ -17,6 +17,19 @@ export class AuthService {
       where: {
         email: loginDto.email,
       },
+      include: {
+        userStores: {
+          include: {
+            store: {
+              select: {
+                id: true,
+                name: true,
+                document: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     if (!user) {
@@ -31,13 +44,21 @@ export class AuthService {
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials');
     }
+
+    const stores = user.userStores.map((us) => ({
+      id: us.store.id,
+      name: us.store.name,
+      document: us.store.document,
+    }));
+
     const token = this.jwtService.sign({
       name: user.name,
       userId: user.id,
       email: user.email,
       role: user.Role,
+      stores,
     });
 
-    return { access_token: token };
+    return { access_token: token, stores };
   }
 }

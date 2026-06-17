@@ -39,6 +39,12 @@ export class StoreController {
     return this.storeService.findOne(id);
   }
 
+  @RequiredRoles('ADMIN', 'OWNER', 'FUNCIONARIO')
+  @Get('slug/:slug')
+  findOneSlug(@Param('slug') slug: string) {
+    return this.storeService.findOneSlug(slug);
+  }
+
   @RequiredRoles('ADMIN', 'OWNER')
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateStoreDto: UpdateStoreDto) {

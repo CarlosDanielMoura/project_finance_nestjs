@@ -77,8 +77,14 @@ export class ClientService {
     return client;
   }
 
-  async update(id: string, updateClientDto: UpdateClientDto) {
+  async update(id: string, updateClientDto: UpdateClientDto, storeId: string) {
     const client = await this.findClientById(id);
+
+    if (client.storeId !== storeId) {
+      throw new ConflictException(
+        'Cliente não pertence à sua loja',
+      );
+    }
 
     if (
       updateClientDto.document &&
@@ -90,10 +96,6 @@ export class ClientService {
       if (duplicateDocument) {
         throw new ConflictException('Cliente já cadastrado com este documento');
       }
-    }
-
-    if (updateClientDto.storeId && updateClientDto.storeId !== client.storeId) {
-      await this.validateStoreExists(updateClientDto.storeId);
     }
 
     return await this.prismaService.client.update({
@@ -117,8 +119,14 @@ export class ClientService {
     });
   }
 
-  async remove(id: string) {
-    await this.findClientById(id);
+  async remove(id: string, storeId: string) {
+    const client = await this.findClientById(id);
+
+    if (client.storeId !== storeId) {
+      throw new ConflictException(
+        'Cliente não pertence à sua loja',
+      );
+    }
 
     return await this.prismaService.client.delete({
       where: { id },

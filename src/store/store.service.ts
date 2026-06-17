@@ -33,18 +33,19 @@ export class StoreService {
       where: {
         id,
       },
-      include: {
-        userStores: {
-          select: {
-            user: {
-              select: {
-                id: true,
-                email: true,
-                name: true,
-              },
-            },
-          },
-        },
+    });
+
+    if (!store) {
+      throw new NotFoundException('Loja não encontrada');
+    }
+
+    return store;
+  }
+
+  async findOneSlug(slug: string) {
+    const store = await this.prismaService.store.findFirst({
+      where: {
+        slug,
       },
     });
 

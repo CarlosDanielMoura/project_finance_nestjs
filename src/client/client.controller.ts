@@ -15,6 +15,7 @@ import { UpdateClientDto } from './dto/update-client.dto';
 import { AuthGuard } from '../auth/auth.guard';
 import { RoleGuard } from '../auth/role/role.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { StoreId } from '../common/decorators/store-id.decorator';
 import { Request } from 'express';
 
 @UseGuards(AuthGuard, RoleGuard)
@@ -24,8 +25,15 @@ export class ClientController {
 
   @Post()
   @Roles('ADMIN', 'OWNER')
-  create(@Body() createClientDto: CreateClientDto, @Req() req: Request) {
-    return this.clientService.create(createClientDto, req.user.id);
+  create(
+    @Body() createClientDto: CreateClientDto,
+    @Req() req: Request,
+    @StoreId() storeId: string,
+  ) {
+    return this.clientService.create(
+      { ...createClientDto, storeId },
+      req.user.id,
+    );
   }
 
   @Get()
@@ -42,14 +50,18 @@ export class ClientController {
 
   @Patch(':id')
   @Roles('ADMIN', 'OWNER')
-  update(@Param('id') id: string, @Body() updateClientDto: UpdateClientDto) {
-    return this.clientService.update(id, updateClientDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateClientDto: UpdateClientDto,
+    @StoreId() storeId: string,
+  ) {
+    return this.clientService.update(id, updateClientDto, storeId);
   }
 
   @Delete(':id')
   @Roles('ADMIN', 'OWNER')
-  remove(@Param('id') id: string) {
-    return this.clientService.remove(id);
+  remove(@Param('id') id: string, @StoreId() storeId: string) {
+    return this.clientService.remove(id, storeId);
   }
 }
 
