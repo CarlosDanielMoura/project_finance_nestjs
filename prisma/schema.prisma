@@ -24,6 +24,7 @@ model Users {
   email      String      @unique
   password   String
   Role       Roles       @default(FUNCIONARIO)
+  isActive   Boolean     @default(true)
   storeID    Store[]
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt

@@ -16,12 +16,13 @@ import { AuthGuard } from '../auth/auth.guard';
 import { RoleGuard } from '../auth/role/role.guard';
 import { RequiredRoles } from '../auth/required-roles.decorator';
 
-@UseGuards(RoleGuard)
+@UseGuards(AuthGuard, RoleGuard)
+// @UseGuards(RoleGuard)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  //@RequiredRoles('OWNER')
+  @RequiredRoles('OWNER', 'ADMIN')
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
@@ -39,13 +40,13 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
-  @RequiredRoles('OWNER')
+  @RequiredRoles('OWNER', 'ADMIN')
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(id, updateUserDto);
   }
 
-  @RequiredRoles('OWNER')
+  @RequiredRoles('OWNER', 'ADMIN')
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
